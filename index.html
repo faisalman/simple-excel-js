@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Simple-excel-js : Client-side parser &amp; writer for Excel file formats (CSV, XML, XLSX)" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Simple-excel-js</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/faisalman/simple-excel-js">View on GitHub</a>
+
+          <h1 id="project_title">Simple-excel-js</h1>
+          <h2 id="project_tagline">Client-side parser &amp; writer for Excel file formats (CSV, XML, XLSX)</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/faisalman/simple-excel-js/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/faisalman/simple-excel-js/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>SimpleExcel.js</h1>
+
+<p>Client-side parser &amp; writer for Excel file formats (CSV, XML, XLSX)</p>
+
+<h2>Example</h2>
+
+<p>Not yet working, maybe someday...</p>
+
+<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"simple-excel.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+
+    <span class="kd">var</span> <span class="nx">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SimpleExcel</span><span class="p">.</span><span class="nx">Parser</span><span class="p">(</span><span class="nx">SimpleExcel</span><span class="p">.</span><span class="nx">Format</span><span class="p">.</span><span class="nx">CSV</span><span class="p">);</span>
+    <span class="nx">parser</span><span class="p">.</span><span class="nx">loadString</span><span class="p">(</span><span class="s1">'Hello, World!'</span><span class="p">);</span>
+    <span class="nx">parser</span><span class="p">.</span><span class="nx">getCell</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// "Hello"</span>
+
+    <span class="kd">var</span> <span class="nx">writer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SimpleExcel</span><span class="p">.</span><span class="nx">Writer</span><span class="p">(</span><span class="nx">SimpleExcel</span><span class="p">.</span><span class="nx">Format</span><span class="p">.</span><span class="nx">XLSX</span><span class="p">);</span>
+    <span class="nx">writer</span><span class="p">.</span><span class="nx">addRow</span><span class="p">([</span><span class="s1">'Hello'</span><span class="p">,</span> <span class="s1">' World!'</span><span class="p">]);</span>
+    <span class="nx">writer</span><span class="p">.</span><span class="nx">addRow</span><span class="p">([</span><span class="s1">'Hello'</span><span class="p">,</span> <span class="s1">' World!'</span><span class="p">]);</span>
+    <span class="nx">writer</span><span class="p">.</span><span class="nx">addRow</span><span class="p">([</span><span class="s1">'Hello'</span><span class="p">,</span> <span class="s1">' World!'</span><span class="p">]);</span>
+    <span class="nx">writer</span><span class="p">.</span><span class="nx">saveFile</span><span class="p">();</span> <span class="c1">// Pop!</span>
+
+<span class="nt">&lt;/script&gt;</span>
+</pre></div>
+
+<h2>License</h2>
+
+<p>MIT License</p>
+
+<p>Copyright © 2013 Faisalman &lt;<a href="mailto:fyzlman@gmail.com">fyzlman@gmail.com</a>&gt;</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Simple-excel-js maintained by <a href="https://github.com/faisalman">faisalman</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
