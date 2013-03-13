@@ -125,22 +125,19 @@
             var number = number || 1;
             return this._sheet[number - 1].cells;
         },
-        loadFile    : function (fileEl, callback) {
+        loadFile    : function (file, callback) {
             var self = this;
-            fileEl.addEventListener('change', function (e) {
-                var file = e.target.files[0];
-                var filetype = Utils.getFiletype(file.name);
-                if (Utils.isEqual(filetype, self._filetype, true)) {
-                    var reader = new FileReader();
-                    reader.onload = function () {
-                        self.loadString(this.result, 0);
-                        callback.apply(self, e);
-                    };
-                    reader.readAsText(file);
-                } else {
-                    throw Exception.FILE_EXTENSION_MISMATCH;
-                }
-            }, false);
+            var filetype = Utils.getFiletype(file.name);
+            if (Utils.isEqual(filetype, self._filetype, true)) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                    self.loadString(this.result, 0);
+                    callback.apply(self);
+                };
+                reader.readAsText(file);
+            } else {
+                throw Exception.FILE_EXTENSION_MISMATCH;
+            }
             return self;
         },
         loadString  : function (string, sheetnum) {

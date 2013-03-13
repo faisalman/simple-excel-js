@@ -20,8 +20,11 @@ Not yet working, maybe someday...
             // read a CSV file
             var csvParser = new SimpleExcel.Parser.CSV();
             var fileInput = document.getElementById('fileInput');
-            csvParser.loadFile(fileInput, function () {
-                console.log(csvParser.getSheet()); // print!
+            fileInput.addEventListener('change', function (e) {            
+                var file = e.target.files[0];
+                csvParser.loadFile(file, function () {
+                    console.log(csvParser.getSheet()); // print!
+                });
             });
 
             // write an XLSX file

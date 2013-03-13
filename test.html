@@ -12,45 +12,44 @@
         <table id="result"></table>
         <script type="text/javascript">
             
-            var csvParser = new SimpleExcel.Parser.CSV();
-            var fileInput = document.getElementById('fileInput');
-            
-            //console.log(SimpleExcel.isSupportedBrowser);
-            
-            csvParser.setDelimiter(',');
-            csvParser.loadFile(fileInput, function () {      
-                
-                // draw HTML table
-                var sheet = csvParser.getSheet();
-                var table = document.getElementById('result');
-                table.innerHTML = "";
-                sheet.forEach(function (el, i) {                    
-                    var row = document.createElement('tr');
-                    el.forEach(function (el, i) {
-                        var cell = document.createElement('td');
-                        cell.innerHTML = el.value;
-                        row.appendChild(cell);
+            var fileInput = document.getElementById('fileInput');        
+            // when local file loaded
+            fileInput.addEventListener('change', function (e) {
+                // parse as CSV
+                var file = e.target.files[0];
+                var csvParser = new SimpleExcel.Parser.CSV();
+                csvParser.setDelimiter(',');
+                csvParser.loadFile(file, function () {
+                    // draw HTML table based on sheet data
+                    var sheet = csvParser.getSheet();
+                    var table = document.getElementById('result');
+                    table.innerHTML = "";
+                    sheet.forEach(function (el, i) {                    
+                        var row = document.createElement('tr');
+                        el.forEach(function (el, i) {
+                            var cell = document.createElement('td');
+                            cell.innerHTML = el.value;
+                            row.appendChild(cell);
+                        });
+                        table.appendChild(row);
+                    });                    
+                    // print to console just for quick testing
+                    console.log(csvParser.getSheet(1));
+                    console.log(csvParser.getSheet(1).getRow(1));
+                    console.log(csvParser.getSheet(1).getColumn(2));
+                    console.log(csvParser.getSheet(1).getCell(3, 1));
+                    console.log(csvParser.getSheet(1).getCell(2, 3).value);                    
+                    // create button to export as TSV
+                    var btnSave = document.createElement('input');
+                    btnSave.type = 'button';
+                    btnSave.value = 'Save as TSV file ->';
+                    document.body.appendChild(btnSave);
+                    // export when button clicked
+                    btnSave.addEventListener('click', function (e) {                
+                        var tsvWriter = new SimpleExcel.Writer.TSV();
+                        tsvWriter.insertSheet(csvParser.getSheet(1));
+                        tsvWriter.saveFile();
                     });
-                    table.appendChild(row);
-                });
-                
-                // print to console
-                console.log(csvParser.getSheet(1));
-                console.log(csvParser.getSheet(1).getRow(1));
-                console.log(csvParser.getSheet(1).getColumn(2));
-                console.log(csvParser.getSheet(1).getCell(3, 1));
-                console.log(csvParser.getSheet(1).getCell(2, 3).value);
-
-                // create button to export as TSV
-                var btnSave = document.createElement('input');
-                btnSave.type = 'button';
-                btnSave.value = 'Save as TSV file ->';
-                document.body.appendChild(btnSave);
-                
-                btnSave.addEventListener('click', function (e) {                
-                    var tsvWriter = new SimpleExcel.Writer.TSV();
-                    tsvWriter.insertSheet(csvParser.getSheet(1));
-                    tsvWriter.saveFile();
                 });
             });
             
