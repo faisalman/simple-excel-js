@@ -3,14 +3,18 @@
     <head>
         <script type="text/javascript" src="simple-excel.js"></script>
         <style>
-            * { margin : 10px }
-            table { border : 1px solid #000 }
+            * { font-family: Helvetica, Arial, sans-serif; font-size: 12px; margin : 10px }
+            td { border : 1px solid #000; padding : 10px }
         </style>
     </head>
     <body>
         <label>Load CSV file: </label><input type="file" id="fileInput" /><br/>
         <table id="result"></table>
+        <input type="button" id="fileExport" hidden="true" />
         <script type="text/javascript">
+        
+            // check browser support
+            // console.log(SimpleExcel.isSupportedBrowser);
             
             var fileInput = document.getElementById('fileInput');        
             // when local file loaded
@@ -38,10 +42,10 @@
                     console.log(csvParser.getSheet(1).getRow(1));
                     console.log(csvParser.getSheet(1).getColumn(2));
                     console.log(csvParser.getSheet(1).getCell(3, 1));
-                    console.log(csvParser.getSheet(1).getCell(2, 3).value);                    
+                    console.log(csvParser.getSheet(1).getCell(2, 3).value);                 
                     // create button to export as TSV
-                    var btnSave = document.createElement('input');
-                    btnSave.type = 'button';
+                    var btnSave = document.getElementById('fileExport');
+                    btnSave.hidden = false;
                     btnSave.value = 'Save as TSV file ->';
                     document.body.appendChild(btnSave);
                     // export when button clicked

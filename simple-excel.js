@@ -74,6 +74,14 @@
         isSupportedBrowser : function () {
             return !![].forEach 
                 && !!window.FileReader;
+        },
+        overrideProperties : function (old, fresh) {
+            for (var i in old) {
+                if (old.hasOwnProperty(i)) {
+                    old[i] = fresh.hasOwnProperty(i) ? fresh[i] : old[i];
+                }
+            }
+            return old;
         }
     };
     
@@ -81,9 +89,16 @@
     // Spreadsheet Constructors
     ////////////////////////////
 
-    var Cell = function (value, datatype) {
-        this.value = value;
-        this.dataType = datatype || DataType.TEXT;
+    var Cell = function (value, dataType) {
+        var defaults = {
+            value    : value || '',
+            dataType : dataType || DataType.TEXT
+        };
+        if (typeof value == typeof {}) {
+            defaults = Utils.overrideProperties(defaults, value);
+        }
+        this.value = defaults.value;
+        this.dataType = defaults.dataType;
         this.toString = function () {
             return value.toString();
         }
@@ -105,25 +120,40 @@
         return this[rowNum - 1];
     };
     
-    var Sheet = function (number) {
-        this.number = number;
-        this.cells = new Records();
+    var Sheet = function () {
+        this.records = new Records();
     };
-    Sheet.prototype.addRow = function (array) {
-        this.cells.push(array);
+    Sheet.prototype.getCell = function (colNum, rowNum) {
+        return this.records.getCell(colNum, rowNum);
+    };
+    Sheet.prototype.getColumn = function (colNum) {
+        return this.records.getColumn(colNum);
+    };
+    Sheet.prototype.getRow = function (rowNum) {
+        return this.records.getRow(rowNum);
+    };
+    Sheet.prototype.insertRecord = function (array) {
+        this.records.push(array);
+    };
+    Sheet.prototype.removeRecord = function (index) {
+        this.records.splice(index - 1, 1);
+    };
+    Sheet.prototype.setRecords = function (records) {
+        this.records = records;
     };
     
     /////////////
     // Parsers
     ////////////
 
+    // Base Class
     var BaseParser = function () {};
     BaseParser.prototype = {
-        _filetype   : undefined,
+        _filetype   : '',
         _sheet      : [],
         getSheet    : function (number) {
             var number = number || 1;
-            return this._sheet[number - 1].cells;
+            return this._sheet[number - 1].records;
         },
         loadFile    : function (file, callback) {
             var self = this;
@@ -145,12 +175,13 @@
         }
     };
 
+    // CSV
     var CSVParser = function () {};
     CSVParser.prototype = new BaseParser();
     CSVParser.prototype._delimiter = Char.COMMA;
     CSVParser.prototype._filetype = Format.CSV;
     CSVParser.prototype.loadString = function (string, sheetnum) {
-        // TODO: implement real parser
+        // TODO: implement real CSV parser
         var self = this;
         var sheetnum = sheetnum || 0;
         self._sheet[sheetnum] = new Sheet();
@@ -159,7 +190,7 @@
             el.split(self._delimiter).forEach(function (el) {
                 row.push(new Cell(el));
             });
-            self._sheet[sheetnum].addRow(row);
+            self._sheet[sheetnum].insertRecord(row);
         });
         return self;
     };
@@ -168,11 +199,13 @@
         return this;
     };
 
+    // TSV
     var TSVParser = function () {};
     TSVParser.prototype = new CSVParser();
     TSVParser.prototype._delimiter = Char.TAB;
     TSVParser.prototype._filetype = Format.TSV;
 
+    // Export var
     var Parser = {
         CSV : CSVParser,
         TSV : TSVParser
@@ -182,49 +215,68 @@
     // Writers
     ////////////
 
+    // Base Class
     var BaseWriter = function () {};
     BaseWriter.prototype = {
-        addRow      : function (row) {
+        _filetype   : '',
+        _mimetype   : '',
+        _sheet      : [],
+        getSheet    : function (number) {
+            var number = number || 1;
+            return this._sheet[number - 1].records;
+        },
+        getString   : function () {
             throw Exception.UNIMPLEMENTED_METHOD;
         },
-        _filetype   : undefined,
-        _mimetype   : undefined,
-        _sheet      : [],
-        insertSheet : function (records) {
-            this._sheet.push(records);
+        insertSheet : function (data) {
+            if (!!data.records) {
+                this._sheet.push(data);
+            } else {
+                var sheet = new Sheet();
+                sheet.setRecords(data);
+                this._sheet.push(sheet);
+            }
+        },
+        removeSheet : function (index) {
+            this._sheet.splice(index - 1, 1);
         },
         saveFile    : function () {
-            // TODO: save to local file
-            throw Exception.UNIMPLEMENTED_METHOD
+            // TODO: find a reliable way to save as local file
+            window.open('data:' + this._mimetype + ';base64,' + window.btoa(this.getString()));
         }
     };
 
+    // CSV
     var CSVWriter = function () {};
     CSVWriter.prototype = new BaseWriter();
     CSVWriter.prototype._delimiter = Char.COMMA;
     CSVWriter.prototype._filetype = Format.CSV;
     CSVWriter.prototype._mimetype = MIMEType.CSV;
-    CSVWriter.prototype.saveFile = function () {   
+    CSVWriter.prototype.getString = function () {
+        // TODO: implement real CSV writer
         var self = this;
         var string = '';
-        this._sheet[0].forEach(function (el, i) {
+        this.getSheet(1).forEach(function (el, i) {
             el.forEach(function (el) {
                 string += el + self._delimiter;
             });
             string += '\r\n';
         });
-        window.open('data:' + this._mimetype + ';base64,' + window.btoa(string));
+        return string;
     };
     CSVWriter.prototype.setDelimiter = function (separator) {
         this._delimiter = separator;
+        return this;
     };
 
+    // TSV
     var TSVWriter = function () {};
     TSVWriter.prototype = new CSVWriter();
     TSVWriter.prototype._delimiter = Char.TAB;
     TSVWriter.prototype._filetype = Format.TSV;
     TSVWriter.prototype._mimetype = MIMEType.TSV;
-
+    
+    // Export var
     var Writer = {
         CSV : CSVWriter,
         TSV : TSVWriter
@@ -236,10 +288,10 @@
 
     var SimpleExcel = {
         Cell                : Cell,
+        DataType            : DataType,
         Exception           : Exception,
         isSupportedBrowser  : Utils.isSupportedBrowser(),
         Parser              : Parser,
-        Records             : Records,
         Sheet               : Sheet,
         Writer              : Writer
     };

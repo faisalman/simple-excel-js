@@ -1,6 +1,6 @@
 # SimpleExcel.js
 
-Client-side parser & writer for Excel file formats (CSV, XML, XLSX)
+Client-side parser & writer for Excel file formats (CSV, XML, XLSX). For server-side solution you might want to check [SimpleExcelPHP](https://github.com/faisalman/simple-excel-php)
 
 ## Example
 
@@ -31,10 +31,10 @@ Not yet working, maybe someday...
             var xlsxWriter = new SimpleExcel.Writer.XLSX();
             var xlsxSheet = new SimpleExcel.Sheet();
             var Cell = SimpleExcel.Cell;
-            xlsxSheet.addRow([new Cell('ID'), new Cell('Nama']));
-            xlsxSheet.addRow([new Cell('1'), new Cell('Kab. Bogor']));
-            xlsxSheet.addRow([new Cell('2'), new Cell('Kab. Cianjur']));
-            xlsxSheet.addRow([new Cell('3'), new Cell('Kab. Sukabumi']));
+            xlsxSheet.insertRecord([new Cell('ID', 'TEXT'), new Cell('Nama', 'TEXT']));
+            xlsxSheet.insertRecord([new Cell(1, 'NUMBER'), new Cell('Kab. Bogor', 'TEXT']));
+            xlsxSheet.insertRecord([new Cell(2, 'NUMBER'), new Cell('Kab. Cianjur', 'TEXT']));
+            xlsxSheet.insertRecord([new Cell(3, 'NUMBER'), new Cell('Kab. Sukabumi', 'TEXT']));
             xlsxWriter.insertSheet(xlsxSheet);
             // export when button clicked
             document.getElementById('fileExport').addEventListener('click', function () {            
@@ -48,6 +48,6 @@ Not yet working, maybe someday...
 
 ## License
 
-MIT License
+GPLv2 & MIT License
 
 Copyright © 2013 Faisalman <<fyzlman@gmail.com>>
