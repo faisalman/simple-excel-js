@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+    <head>
+        <script type="text/javascript" src="simple-excel.js"></script>
+        <style>
+            * { margin : 10px }
+            table { border : 1px solid #000 }
+        </style>
+    </head>
+    <body>
+        <label>Load CSV file: </label><input type="file" id="fileInput" /><br/>
+        <table id="result"></table>
+        <script type="text/javascript">
+            
+            var csvParser = new SimpleExcel.Parser.CSV();
+            var fileInput = document.getElementById('fileInput');
+            
+            //console.log(SimpleExcel.isSupportedBrowser);
+            
+            csvParser.setDelimiter(',');
+            csvParser.loadFile(fileInput, function () {      
+                
+                // draw HTML table
+                var sheet = csvParser.getSheet();
+                var table = document.getElementById('result');
+                table.innerHTML = "";
+                sheet.forEach(function (el, i) {                    
+                    var row = document.createElement('tr');
+                    el.forEach(function (el, i) {
+                        var cell = document.createElement('td');
+                        cell.innerHTML = el.value;
+                        row.appendChild(cell);
+                    });
+                    table.appendChild(row);
+                });
+                
+                // print to console
+                console.log(csvParser.getSheet(1));
+                console.log(csvParser.getSheet(1).getRow(1));
+                console.log(csvParser.getSheet(1).getColumn(2));
+                console.log(csvParser.getSheet(1).getCell(3, 1));
+                console.log(csvParser.getSheet(1).getCell(2, 3).value);
+
+                // create button to export as TSV
+                var btnSave = document.createElement('input');
+                btnSave.type = 'button';
+                btnSave.value = 'Save as TSV file ->';
+                document.body.appendChild(btnSave);
+                
+                btnSave.addEventListener('click', function (e) {                
+                    var tsvWriter = new SimpleExcel.Writer.TSV();
+                    tsvWriter.insertSheet(csvParser.getSheet(1));
+                    tsvWriter.saveFile();
+                });
+            });
+            
+        </script>
+    </body>
+</html>

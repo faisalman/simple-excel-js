@@ -7,20 +7,40 @@ Client-side parser & writer for Excel file formats (CSV, XML, XLSX)
 Not yet working, maybe someday...
 
 ```html
-<script type="text/javascript" src="simple-excel.js"></script>
-<script type="text/javascript">
+<!doctype html>
+<html>
+    <head>
+        <script type="text/javascript" src="simple-excel.js"></script>
+    </head>
+    <body>
+        <input type="file" id="fileInput" /></br/>
+        <input type="button" id="fileExport" />
+        <script type="text/javascript">
 
-    var parser = new SimpleExcel.Parser(SimpleExcel.Format.CSV);
-    parser.loadString('Hello, World!');
-    parser.getCell(1, 1); // "Hello"
+            // read a CSV file
+            var csvParser = new SimpleExcel.Parser.CSV();
+            var fileInput = document.getElementById('fileInput');
+            csvParser.loadFile(fileInput, function () {
+                console.log(csvParser.getSheet()); // print!
+            });
 
-    var writer = new SimpleExcel.Writer(SimpleExcel.Format.XLSX);
-    writer.addRow(['Hello', ' World!']);
-    writer.addRow(['Hello', ' World!']);
-    writer.addRow(['Hello', ' World!']);
-    writer.saveFile(); // Pop!
+            // write an XLSX file
+            var xlsxWriter = new SimpleExcel.Writer.XLSX();
+            var xlsxSheet = new SimpleExcel.Sheet();
+            var Cell = SimpleExcel.Cell;
+            xlsxSheet.addRow([new Cell('ID'), new Cell('Nama']));
+            xlsxSheet.addRow([new Cell('1'), new Cell('Kab. Bogor']));
+            xlsxSheet.addRow([new Cell('2'), new Cell('Kab. Cianjur']));
+            xlsxSheet.addRow([new Cell('3'), new Cell('Kab. Sukabumi']));
+            xlsxWriter.insertSheet(xlsxSheet);
+            // export when button clicked
+            document.getElementById('fileExport').addEventListener('click', function () {            
+                xlsxWriter.saveFile(); // pop!
+            });
 
-</script>
+        </script>
+    </body>
+</html>
 ```
 
 ## License
