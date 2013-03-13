@@ -13,7 +13,7 @@ Not yet working, maybe someday...
         <script type="text/javascript" src="simple-excel.js"></script>
     </head>
     <body>
-        <input type="file" id="fileInput" /></br/>
+        <input type="file" id="fileInput" /><br/>
         <input type="button" id="fileExport" />
         <script type="text/javascript">
 
