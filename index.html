@@ -4,11 +4,11 @@
   <head>
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Simple-excel-js : Client-side parser &amp; writer for Excel file formats (CSV, XML, XLSX)" />
+    <meta name="description" content="SimpleExcel.js : Client-side parser &amp; writer for Excel file formats (CSV, XML, XLSX)" />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>Simple-excel-js</title>
+    <title>SimpleExcel.js</title>
   </head>
 
   <body>
@@ -18,7 +18,7 @@
         <header class="inner">
           <a id="forkme_banner" href="https://github.com/faisalman/simple-excel-js">View on GitHub</a>
 
-          <h1 id="project_title">Simple-excel-js</h1>
+          <h1 id="project_title">SimpleExcel.js</h1>
           <h2 id="project_tagline">Client-side parser &amp; writer for Excel file formats (CSV, XML, XLSX)</h2>
 
             <section id="downloads">
@@ -31,33 +31,58 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h1>SimpleExcel.js</h1>
-
-<p>Client-side parser &amp; writer for Excel file formats (CSV, XML, XLSX)</p>
+        <p>Note that this library only supports client-side operations, as for server-side solution you might want to check <a href="https://github.com/faisalman/simple-excel-php">SimpleExcelPHP</a></p>
 
 <h2>Example</h2>
 
-<p>Not yet working, maybe someday...</p>
+<p>Not yet working, maybe someday... <a href="test.html">see working example here</a></p>
 
-<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"simple-excel.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+<div class="highlight"><pre><span class="cp">&lt;!doctype html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"simple-excel.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"file"</span> <span class="na">id=</span><span class="s">"fileInput"</span> <span class="nt">/&gt;&lt;br/&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">id=</span><span class="s">"fileExport"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
 
-    <span class="kd">var</span> <span class="nx">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SimpleExcel</span><span class="p">.</span><span class="nx">Parser</span><span class="p">(</span><span class="nx">SimpleExcel</span><span class="p">.</span><span class="nx">Format</span><span class="p">.</span><span class="nx">CSV</span><span class="p">);</span>
-    <span class="nx">parser</span><span class="p">.</span><span class="nx">loadString</span><span class="p">(</span><span class="s1">'Hello, World!'</span><span class="p">);</span>
-    <span class="nx">parser</span><span class="p">.</span><span class="nx">getCell</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// "Hello"</span>
+            <span class="c1">// read a CSV file</span>
+            <span class="kd">var</span> <span class="nx">csvParser</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SimpleExcel</span><span class="p">.</span><span class="nx">Parser</span><span class="p">.</span><span class="nx">CSV</span><span class="p">();</span>
+            <span class="kd">var</span> <span class="nx">fileInput</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'fileInput'</span><span class="p">);</span>
+            <span class="c1">// parse when file loaded, then print the result to console</span>
+            <span class="nx">fileInput</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'change'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>            
+                <span class="kd">var</span> <span class="nx">file</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">files</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+                <span class="nx">csvParser</span><span class="p">.</span><span class="nx">loadFile</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">csvParser</span><span class="p">.</span><span class="nx">getSheet</span><span class="p">());</span> <span class="c1">// print!</span>
+                <span class="p">});</span>
+            <span class="p">});</span>
 
-    <span class="kd">var</span> <span class="nx">writer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SimpleExcel</span><span class="p">.</span><span class="nx">Writer</span><span class="p">(</span><span class="nx">SimpleExcel</span><span class="p">.</span><span class="nx">Format</span><span class="p">.</span><span class="nx">XLSX</span><span class="p">);</span>
-    <span class="nx">writer</span><span class="p">.</span><span class="nx">addRow</span><span class="p">([</span><span class="s1">'Hello'</span><span class="p">,</span> <span class="s1">' World!'</span><span class="p">]);</span>
-    <span class="nx">writer</span><span class="p">.</span><span class="nx">addRow</span><span class="p">([</span><span class="s1">'Hello'</span><span class="p">,</span> <span class="s1">' World!'</span><span class="p">]);</span>
-    <span class="nx">writer</span><span class="p">.</span><span class="nx">addRow</span><span class="p">([</span><span class="s1">'Hello'</span><span class="p">,</span> <span class="s1">' World!'</span><span class="p">]);</span>
-    <span class="nx">writer</span><span class="p">.</span><span class="nx">saveFile</span><span class="p">();</span> <span class="c1">// Pop!</span>
+            <span class="c1">// write an XLSX file            </span>
+            <span class="kd">var</span> <span class="nx">xlsxWriter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SimpleExcel</span><span class="p">.</span><span class="nx">Writer</span><span class="p">.</span><span class="nx">XLSX</span><span class="p">();</span>
+            <span class="kd">var</span> <span class="nx">xlsxSheet</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SimpleExcel</span><span class="p">.</span><span class="nx">Sheet</span><span class="p">();</span>
+            <span class="kd">var</span> <span class="nx">Cell</span> <span class="o">=</span> <span class="nx">SimpleExcel</span><span class="p">.</span><span class="nx">Cell</span><span class="p">;</span>
+            <span class="nx">xlsxSheet</span><span class="p">.</span><span class="nx">setRecord</span><span class="p">([</span>
+                <span class="p">[</span><span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="s1">'ID'</span><span class="p">,</span> <span class="s1">'TEXT'</span><span class="p">),</span> <span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="s1">'Nama'</span><span class="p">,</span> <span class="s1">'TEXT'</span><span class="p">),</span> <span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="s1">'Kode Wilayah'</span><span class="p">,</span> <span class="s1">'TEXT'</span><span class="p">)],</span>
+                <span class="p">[</span><span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'NUMBER'</span><span class="p">),</span> <span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="s1">'Kab. Bogor'</span><span class="p">,</span> <span class="s1">'TEXT'</span><span class="p">),</span> <span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'NUMBER'</span><span class="p">)],</span>
+                <span class="p">[</span><span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'NUMBER'</span><span class="p">),</span> <span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="s1">'Kab. Cianjur'</span><span class="p">,</span> <span class="s1">'TEXT'</span><span class="p">),</span> <span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'NUMBER'</span><span class="p">)],</span>
+                <span class="p">[</span><span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'NUMBER'</span><span class="p">),</span> <span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="s1">'Kab. Sukabumi'</span><span class="p">,</span> <span class="s1">'TEXT'</span><span class="p">),</span> <span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'NUMBER'</span><span class="p">)],</span>
+                <span class="p">[</span><span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'NUMBER'</span><span class="p">),</span> <span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="s1">'Kab. Tasikmalaya'</span><span class="p">,</span> <span class="s1">'TEXT'</span><span class="p">),</span> <span class="k">new</span> <span class="nx">Cell</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'NUMBER'</span><span class="p">)]</span>
+            <span class="p">]);</span>
+            <span class="nx">xlsxWriter</span><span class="p">.</span><span class="nx">insertSheet</span><span class="p">(</span><span class="nx">xlsxSheet</span><span class="p">);</span>
+            <span class="c1">// export when button clicked</span>
+            <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'fileExport'</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>            
+                <span class="nx">xlsxWriter</span><span class="p">.</span><span class="nx">saveFile</span><span class="p">();</span> <span class="c1">// pop! ("Save As" dialog appears)</span>
+            <span class="p">});</span>
 
-<span class="nt">&lt;/script&gt;</span>
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
 </pre></div>
 
 <h2>License</h2>
 
-<p>MIT License</p>
+<p>GPLv2 &amp; MIT License</p>
 
 <p>Copyright © 2013 Faisalman &lt;<a href="mailto:fyzlman@gmail.com">fyzlman@gmail.com</a>&gt;</p>
       </section>
@@ -66,7 +91,7 @@
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">Simple-excel-js maintained by <a href="https://github.com/faisalman">faisalman</a></p>
+        <p class="copyright">SimpleExcel.js maintained by <a href="https://github.com/faisalman">faisalman</a></p>
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
