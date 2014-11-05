@@ -1,8 +1,8 @@
-// SimpleExcel.js v0.0.1
+// SimpleExcel.js v0.0.2
 // Client-side parser & writer for Excel file formats (CSV, XML, XLSX)
 // https://github.com/faisalman/simple-excel-js
 // 
-// Copyright © 2013 Faisalman <fyzlman@gmail.com>
+// Copyright © 2013-2014 Faisal Salman <fyzlman@gmail.com>
 // Dual licensed under GPLv2 & MIT
 
 (function (window, undefined) {
@@ -33,15 +33,15 @@
     var Exception = {    
         CELL_NOT_FOUND              : 'CELL_NOT_FOUND',
         COLUMN_NOT_FOUND            : 'COLUMN_NOT_FOUND',
+        ROW_NOT_FOUND               : 'ROW_NOT_FOUND',
         ERROR_READING_FILE          : 'ERROR_READING_FILE',
         ERROR_WRITING_FILE          : 'ERROR_WRITING_FILE',
         FILE_NOT_FOUND              : 'FILE_NOT_FOUND',
-        FILE_EXTENSION_MISMATCH     : 'FILE_EXTENSION_MISMATCH',
+        //FILE_EXTENSION_MISMATCH     : 'FILE_EXTENSION_MISMATCH',
         FILETYPE_NOT_SUPPORTED      : 'FILETYPE_NOT_SUPPORTED',
         INVALID_DOCUMENT_FORMAT     : 'INVALID_DOCUMENT_FORMAT',
         INVALID_DOCUMENT_NAMESPACE  : 'INVALID_DOCUMENT_NAMESPACE',
         MALFORMED_JSON              : 'MALFORMED_JSON',
-        ROW_NOT_FOUND               : 'ROW_NOT_FOUND',
         UNIMPLEMENTED_METHOD        : 'UNIMPLEMENTED_METHOD',
         UNKNOWN_ERROR               : 'UNKNOWN_ERROR',
         UNSUPPORTED_BROWSER         : 'UNSUPPORTED_BROWSER'
@@ -56,7 +56,8 @@
     
     var MIMEType = {
         CSV     : 'text/csv',
-        TSV     : 'text/tsv'
+        TSV     : 'text/tsv',
+        XML     : 'text/xml'
     };
 
     var Regex = {
@@ -157,17 +158,17 @@
         },
         loadFile    : function (file, callback) {
             var self = this;
-            var filetype = Utils.getFiletype(file.name);
-            if (Utils.isEqual(filetype, self._filetype, true)) {
+            //var filetype = Utils.getFiletype(file.name);
+            //if (Utils.isEqual(filetype, self._filetype, true)) {
                 var reader = new FileReader();
                 reader.onload = function () {
                     self.loadString(this.result, 0);
                     callback.apply(self);
                 };
                 reader.readAsText(file);
-            } else {
-                throw Exception.FILE_EXTENSION_MISMATCH;
-            }
+            //} else {
+                //throw Exception.FILE_EXTENSION_MISMATCH;
+            //}
             return self;
         },
         loadString  : function (string, sheetnum) {
@@ -180,12 +181,12 @@
     CSVParser.prototype = new BaseParser();
     CSVParser.prototype._delimiter = Char.COMMA;
     CSVParser.prototype._filetype = Format.CSV;
-    CSVParser.prototype.loadString = function (string, sheetnum) {
+    CSVParser.prototype.loadString = function (str, sheetnum) {
         // TODO: implement real CSV parser
         var self = this;
         var sheetnum = sheetnum || 0;
         self._sheet[sheetnum] = new Sheet();
-        string.replace(Regex.LINEBREAK, Char.NEWLINE).split(Char.NEWLINE).forEach(function (el, i) {
+        str.replace(Regex.LINEBREAK, Char.NEWLINE).split(Char.NEWLINE).forEach(function (el, i) {
             var row = [];
             el.split(self._delimiter).forEach(function (el) {
                 row.push(new Cell(el));
@@ -205,10 +206,37 @@
     TSVParser.prototype._delimiter = Char.TAB;
     TSVParser.prototype._filetype = Format.TSV;
 
+    // XML
+    var XMLParser = function () {};
+    XMLParser.prototype = new BaseParser();
+    XMLParser.prototype._filetype = Format.XML;
+    XMLParser.prototype.loadString = function (str, sheetnum) {
+        var self = this;
+        var sheetnum = sheetnum || 0;
+        var domParser = new DOMParser();
+        var domTree = domParser.parseFromString(str, MIMEType.XML);
+        var sheets = domTree.getElementsByTagName('Worksheet');
+        [].forEach.call(sheets, function (el, i) {
+            self._sheet[sheetnum] = new Sheet();
+            var rows = el.getElementsByTagName('Row');
+            [].forEach.call(rows, function (el, i) {
+                var cells = el.getElementsByTagName('Data');
+                var row = [];
+                [].forEach.call(cells, function (el, i) {
+                    row.push(new Cell(el.innerHTML));
+                });
+                self._sheet[sheetnum].insertRecord(row);
+            });
+            sheetnum++;
+        }); 
+        return self;
+    };
+
     // Export var
     var Parser = {
         CSV : CSVParser,
-        TSV : TSVParser
+        TSV : TSVParser,
+        XML : XMLParser
     };
 
     /////////////
