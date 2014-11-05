@@ -4,8 +4,6 @@ Client-side parser & writer for Excel file formats (CSV, XML, XLSX). For server-
 
 ## Example
 
-Not yet working, maybe someday...
-
 ```html
 <!doctype html>
 <html>
