@@ -56,8 +56,13 @@
     
     var MIMEType = {
         CSV     : 'text/csv',
-        TSV     : 'text/tsv',
-        XML     : 'text/xml'
+        HTML    : 'text/html',
+        JSON    : 'application/json',
+        TSV     : 'text/tab-separated-values',
+        XLS     : 'application/vnd.ms-excel',
+        XLSX    : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        XML     : 'text/xml',
+        XML2003 : 'application/xml'
     };
 
     var Regex = {
