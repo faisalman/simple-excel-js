@@ -1,5 +1,5 @@
-// SimpleExcel.js v0.0.2
-// Client-side parser & writer for Excel file formats (CSV, XML, XLSX)
+// SimpleExcel.js v0.1.3
+// Client-side script to easily parse / convert / write any Microsoft Excel XLSX / XML / CSV / TSV / HTML / JSON / etc formats
 // https://github.com/faisalman/simple-excel-js
 // 
 // Copyright © 2013-2014 Faisal Salman <fyzlman@gmail.com>

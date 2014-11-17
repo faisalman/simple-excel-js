@@ -1,6 +1,6 @@
 # SimpleExcel.js
 
-Client-side parser & writer for Excel file formats (CSV, XML, XLSX). For server-side solution you might want to check [SimpleExcelPHP](https://github.com/faisalman/simple-excel-php)
+Client-side script to easily parse / convert / write any Microsoft Excel XLSX / XML / CSV / TSV / HTML / JSON / etc formats. As for server-side solution you might want to check [SimpleExcelPHP](https://github.com/faisalman/simple-excel-php)
 
 ## Example
 
