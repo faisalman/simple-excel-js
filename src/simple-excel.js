@@ -46,14 +46,17 @@
         UNKNOWN_ERROR               : 'UNKNOWN_ERROR',
         UNSUPPORTED_BROWSER         : 'UNSUPPORTED_BROWSER'
     };
-    
+
     var Format = {        
-        CSV     : 'CSV',
-        TSV     : 'TSV',
-        XLSX    : 'XLSX',
-        XML     : 'XML'
+        CSV     : 'csv',
+        HTML    : 'html',
+        JSON    : 'json',
+        TSV     : 'tsv',
+        XLS     : 'xls',
+        XLSX    : 'xlsx',
+        XML     : 'xml'
     };
-    
+
     var MIMEType = {
         CSV     : 'text/csv',
         HTML    : 'text/html',
@@ -207,6 +210,32 @@
         this._delimiter = separator;
         return this;
     };
+    
+    // HTML
+    var HTMLParser = function () {};
+    HTMLParser.prototype = new BaseParser();
+    HTMLParser.prototype._filetype = Format.HTML;
+    HTMLParser.prototype.loadString = function (str, sheetnum) {
+        var self = this;
+        var sheetnum = sheetnum || 0;
+        var domParser = new DOMParser();
+        var domTree = domParser.parseFromString(str, MIMEType.HTML);
+        var sheets = domTree.getElementsByTagName('table');
+        [].forEach.call(sheets, function (el, i) {
+            self._sheet[sheetnum] = new Sheet();
+            var rows = el.getElementsByTagName('tr');
+            [].forEach.call(rows, function (el, i) {
+                var cells = el.getElementsByTagName('td');
+                var row = [];
+                [].forEach.call(cells, function (el, i) {
+                    row.push(new Cell(el.innerHTML));
+                });
+                self._sheet[sheetnum].insertRecord(row);
+            });
+            sheetnum++;
+        });
+        return self;
+    };
 
     // TSV
     var TSVParser = function () {};
@@ -243,6 +272,7 @@
     // Export var
     var Parser = {
         CSV : CSVParser,
+        HTML: HTMLParser,
         TSV : TSVParser,
         XML : XMLParser
     };
