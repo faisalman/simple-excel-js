@@ -140,12 +140,15 @@
     };
     Sheet.prototype.insertRecord = function (array) {
         this.records.push(array);
+        return this;
     };
     Sheet.prototype.removeRecord = function (index) {
         this.records.splice(index - 1, 1);
+        return this;
     };
     Sheet.prototype.setRecords = function (records) {
         this.records = records;
+        return this;
     };
     
     /////////////
@@ -269,13 +272,16 @@
                 sheet.setRecords(data);
                 this._sheet.push(sheet);
             }
+            return this;
         },
         removeSheet : function (index) {
             this._sheet.splice(index - 1, 1);
+            return this;
         },
         saveFile    : function () {
             // TODO: find a reliable way to save as local file
-            window.open('data:' + this._mimetype + ';base64,' + window.btoa(this.getString()));
+            window.open('data:' + this._mimetype + ';base64,' + window.btoa(this.getString()));            
+            return this;
         }
     };
 
