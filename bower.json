@@ -1,0 +1,9 @@
+{
+  name: 'simple-excel-js',
+  version: '0.0.1',
+  authors: [
+    'faisalman <fyzlman+github@gmail.com>'
+  ],
+  license: 'MIT',
+  main: 'src/simple-excel.js'
+}
