@@ -70,7 +70,10 @@
 
     var Regex = {
         FILENAME    : /.*\./g,
-        LINEBREAK   : /\r\n/g
+        LINEBREAK   : /\r\n?|\n/g,
+        COMMA       : /(,)(?=(?:[^"]|"[^"]*")*$)/g,
+        QUOTATION   : /(^")(.*)("$)/g,
+        TWO_QUOTES  : /""/g
     };
 
     var Utils = {
@@ -80,9 +83,8 @@
         isEqual     : function (str1, str2, ignoreCase) {
             return ignoreCase ? str1.toLowerCase() == str2.toLowerCase() : str1 == str2;
         },
-        isSupportedBrowser : function () {
-            return !![].forEach 
-                && !!window.FileReader;
+        isSupportedBrowser: function() {
+            return !![].forEach && !!window.FileReader;
         },
         overrideProperties : function (old, fresh) {
             for (var i in old) {
@@ -110,12 +112,12 @@
         this.dataType = defaults.dataType;
         this.toString = function () {
             return value.toString();
-        }
+        };
     };
         
-    var Records = function () {};
-    Records.prototype = new Array();
-    Records.prototype.getCell = function (colNum, rowNum) {
+    var Records = function() {};
+    Records.prototype = [];
+    Records.prototype.getCell = function(colNum, rowNum) {
         return this[rowNum - 1][colNum - 1];
     };
     Records.prototype.getColumn = function (colNum) {        
@@ -163,8 +165,8 @@
     BaseParser.prototype = {
         _filetype   : '',
         _sheet      : [],
-        getSheet    : function (number) {
-            var number = number || 1;
+        getSheet    : function(number) {
+            number = number || 1;
             return this._sheet[number - 1].records;
         },
         loadFile    : function (file, callback) {
@@ -195,12 +197,21 @@
     CSVParser.prototype.loadString = function (str, sheetnum) {
         // TODO: implement real CSV parser
         var self = this;
-        var sheetnum = sheetnum || 0;
-        self._sheet[sheetnum] = new Sheet();
-        str.replace(Regex.LINEBREAK, Char.NEWLINE).split(Char.NEWLINE).forEach(function (el, i) {
+        sheetnum = sheetnum || 0;
+        self._sheet[sheetnum] = new Sheet();       
+        
+        str.replace(Regex.LINEBREAK, Char.NEWLINE)
+           .split(Char.NEWLINE)
+           .forEach(function(el, i)
+        {
+            var sp = el.split(Regex.COMMA);
             var row = [];
-            el.split(self._delimiter).forEach(function (el) {
-                row.push(new Cell(el));
+            sp.forEach(function(cellText) {
+                if (cellText !== self._delimiter) {
+                    cellText = cellText.replace(Regex.QUOTATION, "$2");
+                    cellText = cellText.replace(Regex.TWO_QUOTES, "\"");
+                    row.push(new Cell(cellText));
+                }
             });
             self._sheet[sheetnum].insertRecord(row);
         });
@@ -215,13 +226,13 @@
     var HTMLParser = function () {};
     HTMLParser.prototype = new BaseParser();
     HTMLParser.prototype._filetype = Format.HTML;
-    HTMLParser.prototype.loadString = function (str, sheetnum) {
+    HTMLParser.prototype.loadString = function(str, sheetnum) {
         var self = this;
-        var sheetnum = sheetnum || 0;
         var domParser = new DOMParser();
         var domTree = domParser.parseFromString(str, MIMEType.HTML);
         var sheets = domTree.getElementsByTagName('table');
-        [].forEach.call(sheets, function (el, i) {
+        sheetnum = sheetnum || 0;
+        [].forEach.call(sheets, function(el, i) {
             self._sheet[sheetnum] = new Sheet();
             var rows = el.getElementsByTagName('tr');
             [].forEach.call(rows, function (el, i) {
@@ -247,13 +258,13 @@
     var XMLParser = function () {};
     XMLParser.prototype = new BaseParser();
     XMLParser.prototype._filetype = Format.XML;
-    XMLParser.prototype.loadString = function (str, sheetnum) {
+    XMLParser.prototype.loadString = function(str, sheetnum) {
         var self = this;
-        var sheetnum = sheetnum || 0;
         var domParser = new DOMParser();
         var domTree = domParser.parseFromString(str, MIMEType.XML);
         var sheets = domTree.getElementsByTagName('Worksheet');
-        [].forEach.call(sheets, function (el, i) {
+        sheetnum = sheetnum || 0;
+        [].forEach.call(sheets, function(el, i) {
             self._sheet[sheetnum] = new Sheet();
             var rows = el.getElementsByTagName('Row');
             [].forEach.call(rows, function (el, i) {
@@ -287,8 +298,8 @@
         _filetype   : '',
         _mimetype   : '',
         _sheet      : [],
-        getSheet    : function (number) {
-            var number = number || 1;
+        getSheet    : function(number) {
+            number = number || 1;
             return this._sheet[number - 1].records;
         },
         getString   : function () {
