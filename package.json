@@ -1,0 +1,34 @@
+{
+  "name": "simple-excel-js",
+  "version": "1.0.0",
+  "description": "Client-side script to easily parse / convert / write any Microsoft Excel XLSX / XML / CSV / TSV / HTML / JSON / etc formats.",
+  "main": "src/simple-excel.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/njabang/simple-excel-js.git"
+  },
+  "keywords": [
+    "excel",
+    "xls",
+    "xlsx",
+    "office",
+    "spreadsheet",
+    "xml",
+    "csv",
+    "tsv",
+    "html",
+    "json"
+  ],
+  "author": "faisalman <fyzlman+github@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/njabang/simple-excel-js/issues"
+  },
+  "homepage": "https://github.com/njabang/simple-excel-js#readme"
+}
